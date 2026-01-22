@@ -36,4 +36,5 @@ Thumbs.db
 *.sqlite
 *.sqlite3
 *.db
-*.ts
+knexfile.ts
+src/database/migrations/migration-add.node
