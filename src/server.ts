@@ -5,6 +5,7 @@ import { errorHandler, notFoundHandler } from './middleware/errorHandler';
 import { requestLogger } from './middleware/requestLogger';
 import Database from './database/connection';
 import logger from './utils/logger';
+import oddsHistoryService from './services/oddsHistoryService';
 
 // Load environment variables
 dotenv.config();
@@ -53,6 +54,9 @@ const startServer = async () => {
     }
 
     logger.info('Database connection established');
+
+    // Initialize cron job for odds snapshots
+    oddsHistoryService.initCronJob();
 
     app.listen(PORT, () => {
       logger.info(`Server is running on port ${PORT}`);

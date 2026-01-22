@@ -5,13 +5,14 @@ export async function up(knex: Knex): Promise<void> {
     table.bigIncrements('id').primary();
     table.string('game_id', 255).notNullable();
     table.string('bookmaker_key', 100).notNullable();
-    table.string('outcome_name', 255).notNullable();
-    table.decimal('outcome_price', 10, 2).notNullable();
+    table.string('market_key', 100).notNullable();
+    table.text('odds_data').notNullable(); // JSON data stored as text
     table.timestamp('snapshot_time').notNullable();
     table.timestamp('created_at').defaultTo(knex.fn.now());
     
     table.index('game_id');
     table.index('snapshot_time');
+    table.index('bookmaker_key');
   });
 }
 
