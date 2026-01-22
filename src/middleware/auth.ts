@@ -18,8 +18,34 @@ export const authenticate = async (
   res: Response,
   next: NextFunction
 ): Promise<void> => {
-  res.status(401).json({
-    success: false,
-    error: 'Not implemented',
-  } as ApiResponse);
+  try {
+    // Get token from Authorization header
+    const authHeader = req.headers.authorization;
+    
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      res.status(401).json({
+        success: false,
+        error: 'No token provided',
+      } as ApiResponse);
+      return;
+    }
+
+    const token = authHeader.substring(7); // Remove 'Bearer ' prefix
+
+    // Verify token
+    const payload = authService.verifyToken(token);
+
+    // Attach user data to request
+    req.user = {
+      userId: payload.userId,
+      email: payload.email,
+    };
+
+    next();
+  } catch (error) {
+    res.status(401).json({
+      success: false,
+      error: 'Invalid or expired token',
+    } as ApiResponse);
+  }
 }
