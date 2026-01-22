@@ -3,16 +3,21 @@ import favoritesRepository from '../database/repositories/favoritesRepository';
 import { AppError } from '../middleware/errorHandler';
 
 class FavoritesService {
-  async getUserFavorites(userId: string): Promise<FavoriteWithGame[]> {
-    throw new Error('Not implemented');
+  async getUserFavorites(userId: string): Promise<string[]> {
+    const favorites = await favoritesRepository.getUserFavorites(userId);
+    return favorites.map(f => f.game_id);
   }
 
   async addFavorite(userId: string, gameId: string): Promise<void> {
-    throw new Error('Not implemented');
+    if (!gameId) {
+      throw new AppError('Game ID is required', 400);
+    }
+
+    await favoritesRepository.addFavorite(userId, gameId);
   }
 
   async removeFavorite(userId: string, gameId: string): Promise<void> {
-    throw new Error('Not implemented');
+    await favoritesRepository.removeFavorite(userId, gameId);
   }
 }
 

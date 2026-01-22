@@ -7,20 +7,40 @@ class FavoritesRepository {
     return Database.getConnection();
   }
 
-  async findByUserId(userId: string): Promise<FavoriteWithGame[]> {
-    throw new Error('Not implemented');
+  async getUserFavorites(userId: string): Promise<{ game_id: string }[]> {
+    return await this.db('user_favorites')
+      .where({ user_id: userId })
+      .select('game_id');
   }
 
-  async add(userId: string, gameId: string): Promise<UserFavorite> {
-    throw new Error('Not implemented');
+  async addFavorite(userId: string, gameId: string): Promise<void> {
+    await this.db('user_favorites')
+      .insert({
+        user_id: userId,
+        game_id: gameId,
+      })
+      .onConflict(['user_id', 'game_id'])
+      .ignore();
   }
 
-  async remove(userId: string, gameId: string): Promise<number> {
-    throw new Error('Not implemented');
+  async removeFavorite(userId: string, gameId: string): Promise<void> {
+    await this.db('user_favorites')
+      .where({
+        user_id: userId,
+        game_id: gameId,
+      })
+      .delete();
   }
 
-  async exists(userId: string, gameId: string): Promise<boolean> {
-    throw new Error('Not implemented');
+  async isFavorite(userId: string, gameId: string): Promise<boolean> {
+    const result = await this.db('user_favorites')
+      .where({
+        user_id: userId,
+        game_id: gameId,
+      })
+      .first();
+    
+    return !!result;
   }
 }
 
